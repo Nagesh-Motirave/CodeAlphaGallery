@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Gallery</title>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- HEADER -->
+<header class="bg-slate-700 p-5">
+  <h1 class="text-3xl text-white font-bold">Our Photo Gallery</h1>
+
+  <!-- NAV -->
+  <nav class="flex gap-4 mt-4">
+    <button class="filter-btn bg-pink-500 text-white px-4 py-2 rounded" data-filter="all">All</button>
+    <button class="filter-btn text-white px-4 py-2" data-filter="nature">Nature</button>
+    <button class="filter-btn text-white px-4 py-2" data-filter="animal">Animal</button>
+    <button class="filter-btn text-white px-4 py-2" data-filter="technology">Technology</button>
+    <button class="filter-btn text-white px-4 py-2" data-filter="people">People</button>
+  </nav>
+</header>
+
+<!-- GALLERY -->
+<main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+
+  <!-- Nature -->
+  <div class="gallery-item nature"><img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600" class="img"></div>
+  <div class="gallery-item nature"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600" class="img"></div>
+
+  <!-- Animal -->
+  <div class="gallery-item animal"><img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=600" class="img"></div>
+  <div class="gallery-item animal"><img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=600" class="img"></div>
+
+  <!-- Technology -->
+  <div class="gallery-item technology"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600" class="img"></div>
+  <div class="gallery-item technology"><img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=600" class="img"></div>
+
+  <!-- People -->
+  <div class="gallery-item people"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600" class="img"></div>
+  <div class="gallery-item people"><img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600" class="img"></div>
+
+</main>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class=" fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center">
+
+  <button id="prev" class="absolute left-5 text-white text-3xl">❮</button>
+
+  <img id="lightbox-img" class="max-h-[80%] rounded">
+
+  <button id="next" class="absolute right-5 text-white text-3xl">❯</button>
+
+  <button id="close" class="absolute top-5 right-5 text-white text-2xl">✕</button>
+</div>
+
+<script>
+  // FILTER LOGIC
+  const buttons = document.querySelectorAll(".filter-btn");
+  const items = document.querySelectorAll(".gallery-item");
+
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelector(".bg-pink-500")?.classList.remove("bg-pink-500");
+      btn.classList.add("bg-pink-500");
+
+      const filter = btn.dataset.filter;
+
+      items.forEach(item => {
+        item.style.display = (filter === "all" || item.classList.contains(filter))
+          ? "block"
+          : "none";
+      });
+    });
+  });
+
+  // LIGHTBOX
+  const imgs = document.querySelectorAll(".img");
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+
+  let current = 0;
+
+  imgs.forEach((img, index) => {
+    img.addEventListener("click", () => {
+      lightbox.classList.remove("hidden");
+      lightboxImg.src = img.src;
+      current = index;
+    });
+  });
+
+  document.getElementById("close").onclick = () => {
+    lightbox.classList.add("hidden");
+  };
+
+  document.getElementById("next").onclick = () => {
+    current = (current + 1) % imgs.length;
+    lightboxImg.src = imgs[current].src;
+  };
+
+  document.getElementById("prev").onclick = () => {
+    current = (current - 1 + imgs.length) % imgs.length;
+    lightboxImg.src = imgs[current].src;
+  };
+
+  // KEYBOARD SUPPORT
+  document.addEventListener("keydown", (e) => {
+    if (lightbox.classList.contains("hidden")) return;
+
+    if (e.key === "ArrowRight") document.getElementById("next").click();
+    if (e.key === "ArrowLeft") document.getElementById("prev").click();
+    if (e.key === "Escape") document.getElementById("close").click();
+  });
+</script>
+
+</body>
+</html>
